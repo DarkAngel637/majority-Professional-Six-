@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6第一节课</title>
+</head>
+<body>
+    <script>
+        /**
+         * 1. 变量的声明 var, let, const
+         */
+        console.log('typeof a...', typeof a);
+        a = 100;
+        a = function(){
+            console.log('a1...', a);
+            a = 200;
+        }
+        console.log('typeof a...', typeof a);
+        a();
+        console.log('a2...', a);
+        // string 100 200
+
+        for (let i=0; i<10; i++){
+            setTimeout(()=>{
+                console.log('i...', i);
+            })
+        }
+        let b = 1000;
+        {
+            let c = 2000;
+            console.log('b...', b, c);
+        }
+        try{
+            console.log('c...', c);
+        }catch(e){
+
+        }
+
+        const d = 1000;
+        // d = 2000;
+        console.log('d...', d);
+
+        const e = {};
+        e.log = console.log;
+        e.log('e...', e);
+
+        /**
+         * 模版字符串
+         * padStart, padEnd
+         */
+        const msg = `hello ${e.log.toString()}!`;
+        console.log('msg...', msg);
+
+        /**
+         * 数组扩展
+         * [...], isArray, Array.from 
+         */
+        const arr = [0,1,2,3,4,5,6,7,8,9,10];
+        const arr1 = arr;
+        const arr2 = [...arr];
+        console.log('arr === arr1?', arr === arr1, arr === arr2);
+        Array.isArray({})   // 判断是否为一个数组
+        Array.isArray(document.body.childNodes);    // false 伪数组
+        Array.isArray([...document.body.childNodes]);    // true [...]把伪数组转化成数组
+        Array.from(document.body.childNodes)    // 把伪数组转化成数组，数组长度由length决定
+
+
+        /**
+         * 对象扩展
+         * {...}, Object.assign, Object.keys,values,entries
+         */
+        const obj = {a:1, b:2, c:3, d:4};
+        const obj1 = obj;
+        const obj2 = {...obj};
+        console.log('obj === obj1?', obj === obj1, obj === obj2);
+        const obj3 = Object.assign(obj, {a:100, b:200, c:300, e:10});   // 合并相同的属性，后面覆盖前面，赋值给到一个参数
+        console.log('obj3...', obj3, obj);
+        const obj4 = Object.assign({}, obj, {a1:100, b1:200, c1:300, e1:10});
+        console.log('obj4...', obj4, obj);
+        
+        const keys = Object.keys(obj4).length;   // 判断对象为空
+        console.log('keys...', keys);
+        const values = Object.values(obj4).length;
+        console.log('values...', values);
+        const entries = Object.entries(obj4);
+        console.log('entries...', entries);
+
+        /**
+         * 六大基础类型，undefined, null, boolean, number, string, symbol
+         */
+        const reactElement = Symbol('@@reactElement');
+        const newElement = Symbol('@@reactElement');
+        console.log('reactElement', reactElement, newElement, reactElement === newElement, reactElement === 'Symbol(@@reactElement)');
+
+        /**
+         * Event Loop
+         * 同步任务
+         * 异步任务
+         *     宏任务：setTimeout, setInterval, ajax, requestAnimationFrame
+         *     微任务: promise的then，mutationObserve
+         * 执行顺序
+         *      同步任务 > 异步任务
+         *      微任务 > 宏任务
+         */
+         console.log(1);     // 1.第一个同步任务
+
+        setTimeout(() => {
+            console.log(2);     // 7.第一个宏任务
+            Promise.resolve().then(() => {
+                console.log(3)  // 8.第一个宏任务中的微任务
+            });
+        });
+
+        new Promise((resolve, reject) => {
+            console.log(4)      // 2.第二个同步立即执行的同步任务
+            resolve(5)
+        }).then((data) => {
+            console.log(data);  // 4. 第一个微任务
+
+            Promise.resolve().then(() => {
+                console.log(6)  // 5. 第二个微任务
+            }).then(() => {
+                console.log(7)  // 6.第三个微任务
+                
+                setTimeout(() => {
+                    console.log(8)  //10. 第三个宏任务
+                }, 0);
+            });
+        })
+
+        setTimeout(() => {
+            console.log(9);     // 9. 第二个宏任务
+        })
+
+        console.log(10);    // 3.同步任务
+    </script>
+</body>
+</html>
