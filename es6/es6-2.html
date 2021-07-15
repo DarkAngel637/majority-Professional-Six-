@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6第二天</title>
+    <style>
+        img{
+            width: 33%;
+        }
+        .progress{
+            width: 60%;
+            background: #999;
+            height:15px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress span{
+            background: gold;
+            position: absolute;
+            height: 100%;
+            width: 0;
+            transition: .3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress">
+        <span></span>
+    </div>
+    <script>
+
+        /**
+         * 判断传入的是不是一个数组
+         * 1. Object.prototype.toString.call([]) === '[object Array]'
+         * 2. [].constructor === Array
+         * 3. [] instanceof Array === true
+         */
+
+         /**
+          * Set和Map
+          * Set表示的是一个集合，所有元素不可重复
+          * 1. add方法，往set里面添加元素,返回原集合
+          * 2. delete方法，往set里面删除元素，返回boolean
+          * 3. has方法，判断集合里是否有当前原色，返回boolean
+          * 4. clear方法，清空数组,没返回值
+          * 使用for...of遍历
+          * forEach遍历
+          * 转化为数组：[...]或Array.from
+          * 特殊的Set, WeakSet, 只接受对象类型数据作为集合成员(除了null)
+          * 
+          * Map表示的是一个映射关系，键可以是任意类型数据
+          * 1. 设置成员set
+          * 2. 获取成员get
+          * 3. 清空clear
+          * 4. has判断是否有当前key
+          * 5. 遍历，keys,values,entries
+          * 6. size获取成员个数
+          * 7. delete删除成员
+          * 特殊的Map, WeakMap, 只接受对象类型数据作为key(除了null)
+          */ 
+          const rawArr = [1,2,3,4,5,6,7,8,9,10,1,2,3,4];
+        let set = new Set(rawArr);
+        console.log('set...', set);
+        const newRawArr = [...new Set(set)];
+        let weakSet = new WeakSet();
+        
+
+        let map = new Map
+        const fn = ()=>{};
+        console.log('map...', map, map[fn]);
+        let weakMap = new WeakMap();
+
+        /**
+         * Object.defineProperty(obj, key, {})
+         * 劫持对象里边的属性
+         */ 
+        const data = {}, _data = {};
+        Object.defineProperty(data, 'a', {
+            // writable: false,     // 不可修改
+            configurable: false,    // 不可删除
+            get(){
+                return 'hello world';
+            },
+            set(value){
+                console.log('value...', value);
+                _data['a'] = value;
+            }
+        })
+
+        /**
+         * Proxy(target, handle)
+         * 代理target，target可以是任意类型的对象数据
+         * 通过handle的行为覆盖target的行为，get获取值，set修改值
+         */ 
+        const target = [];
+        let newTarget = new Proxy(target, {
+            get: (target, key)=>{
+                if (target[key]){
+                    return target[key]
+                }
+                return 'hello world';
+            }, 
+            set: (target, key, value)=>{
+                target[key] = value*value;
+            }
+        })
+
+        /**
+         * Promise,用来解决异步回调嵌套的问题
+         * 三个状态：
+         *  创建后=>pending
+         *  调用resolve=>fulfilled
+         *  调用reject=>rejected
+         * 创建Promise:
+         *  new Promise
+         *  Promise.resolve 创建一个promise，状态立刻由pending->fulfilled
+         *  Promise.reject  创建一个promise, 状态立刻由pending->rejected
+         * Promise.all 批量处理promise任务，状态全部成功之后再结束执行then
+         * Promise.race 批量处理promise任务，任意一个成功之后就结束
+         */ 
+        function loadImg(src){
+            return new Promise((resolve, reject)=>{
+                let img = new Image();
+                img.src = src;
+                img.onload = function(){
+                    resolve(img);
+                } 
+                img.onerror = function(e){
+                    reject(e);
+                } 
+            })
+        }
+        // const bgSrc = 'https://t7.baidu.com/it/udssss=1595072465,3644073269&fm=193&f=GIF';
+        // loadImg(bgSrc).then(res=>{
+        //     document.body.appendChild(res);
+        // }).catch(e=>{
+        //     console.log('e...', e);
+        // })
+        const imgs = ['https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=4198287529,2774471735&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=1956604245,3662848045&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=2529476510,3041785782&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=727460147,2222092211&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=2511982910,2454873241&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=825057118,3516313570&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=3435942975,1552946865&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=3569419905,626536365&fm=193&f=GIF',
+        'https://t7.baidu.com/it/u=3779234486,1094031034&fm=193&f=GIF'];
+        const finished = [];
+        function computeProgress(){
+            console.log('progress...', finished.length / imgs.length);
+            document.querySelector('.progress span').style.width = finished.length*100 / imgs.length+'%';
+        }
+        imgs.forEach(item=>{
+            loadImg(item).then(res=>{
+                finished.push(res);
+                document.body.appendChild(res);
+                computeProgress();
+            }).catch(e=>{
+                console.log('e...', e);
+            })
+        })
+
+        Promise.resolve(100).then(resolve=>{
+            console.log('resolve...', resolve);
+        }, reject=>{
+            console.log('reject...', reject);
+        })
+
+        Promise.reject(10000).then(resolve=>{
+            console.log('resolve...', resolve);
+        }, reject=>{
+            console.log('reject...', reject);
+        })
+
+        Promise.all(imgs.map(item=>loadImg(item))).then(res=>{
+            console.log('res...', res);
+            res.forEach(item=>{
+                document.body.appendChild(item);
+            })
+        })
+
+        Promise.race(imgs.map(item=>loadImg('123'+item))).then(resolve=>{
+            console.log('resolve...', resolve);
+        }, reject=>{
+            console.log('reject...', reject);
+        })
+
+    </script>
+</body>
+</html>
