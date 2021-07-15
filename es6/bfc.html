@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFC</title>
+    <style>
+        .content{
+            background: coral;
+            padding: 10px;
+        }
+        .content p:nth-child(1){
+            float: left;
+            width: 200px;
+            background: crimson;
+            height: 500px;
+        }
+        .content p:nth-child(2){
+            background: chartreuse;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <p></p>
+        <p></p>
+    </div>
+</body>
+</html>
