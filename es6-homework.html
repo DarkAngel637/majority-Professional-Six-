@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proxy+Reflect+Dom</title>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script>
+        /**
+        *  1. 将以下代码补全完整，不得扩展其他无用辅助代码 （10分）
+           2. 正确使用proxy代理 （10分）
+           3. 正确设置属性对于的属性（10分）
+           4. 正确添加到页面（10分）
+           5. 正确将文本节点添加成功（10分）
+           6. 文本节点中的属性正确切换（10分）
+           7. 正确处理未出现的属性和方法的方式（10分）
+           8. 正确考虑到节点套用节点的递归实现（10分）
+           9. 正确满足未使用到的属性的返回（10分）
+           10.正确将文本节点中的属性替换进去（10分）
+           let obj = {};
+
+           let newObj = new Proxy(obj, {
+           // 补全代码
+           });
+
+           newObj.createEl({
+           el: box,
+           type: div,
+           data: {
+           name: tom,
+           age: 18
+           },
+           props: {
+           id: div;
+           },
+           one: 我是div的第一段内容{{data.name}},
+           two:我是div的第二段内容{{data.age}}
+           })
+       */
+        let obj = {};
+        let newObj = new Proxy(obj, {
+            get(target, propKey, receiver){
+                if (propKey === 'createEl'){
+                    return createEl;
+                }else if(Reflect.has(obj, propKey)){
+                    return Reflect.get(obj, propKey, receiver);
+                }else{
+                    console.warn('你正在访问不存在的属性')
+                }
+            },
+            set(target, propKey, value, receiver){
+                obj._data[propKey] = value;
+                // 重新处理模版
+                createEl({el: obj._el, type: obj._type, data: obj._data, props: obj._props, ...obj._children});                
+            }
+        })
+
+        function createEl({el, type, data, props, ...children}){
+            // 存储data
+            obj._data = data;
+            obj._el = el;
+            obj._type = type;
+            obj._props = props;
+            obj._children = children;
+
+            // 处理模版挂载元素
+            el = document.querySelector(el) || document.body;
+            // 处理类型
+            type = type || 'div';
+            let element =  document.createElement(type);
+            // 处理props
+            for (let key in props){
+                element.setAttribute(key, props[key]);
+            }
+            // 处理children
+            Object.values(children).forEach(item=>{
+                // 替换模版
+                item = item.replace(/\{\{([\w\.]+)\}\}/, function(str, $0){
+                    let key = $0.split('.')[1];
+                    return data[key];
+                })
+                element.appendChild(document.createTextNode(item))
+            })
+            // 清空挂载元素的后代节点
+            el.childNodes.forEach(node=>node.parentNode.removeChild(node));
+            // 挂载新的节点
+            el.appendChild(element);
+        }
+
+        newObj.createEl({
+            el: '#box',
+            type: 'div',
+            data: {
+                name: 'tom',
+                age: 18
+            },
+            props: {
+                id: 'div'
+            },
+            one: '我是div的第一段内容{{data.name}}',
+            two: '我是div的第二段内容{{data.age}}'
+        })
+    </script>
+</body>
+
+</html>

@@ -81,7 +81,109 @@
             }
         }
 
-        Person('tom').eat('香蕉').sleep(2000).eat('苹果').sleepFirst(3000).eat('火腿').sleepFirst(10000);
+        // Person('tom').eat('香蕉').sleep(2000).eat('苹果').sleepFirst(3000).eat('火腿').sleepFirst(10000);
+
+
+        /**
+         * Proxy代理taregt,使用handle拦截处理默认行为
+            get(target, propKey, receiver)：拦截对象属性的读取，比如proxy.foo和proxy['foo']。
+            set(target, propKey, value, receiver)：拦截对象属性的设置，比如proxy.foo = v或proxy['foo'] = v，返回一个布尔值。
+            has(target, propKey)：拦截propKey in proxy的操作，返回一个布尔值。
+            deleteProperty(target, propKey)：拦截delete proxy[propKey]的操作，返回一个布尔值。
+            ownKeys(target)：拦截Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for...in循环，返回一个数组。该方法返回目标对象所有自身的属性的属性名，而Object.keys()的返回结果仅包括目标对象自身的可遍历属性。
+            getOwnPropertyDescriptor(target, propKey)：拦截Object.getOwnPropertyDescriptor(proxy, propKey)，返回属性的描述对象。
+            defineProperty(target, propKey, propDesc)：拦截Object.defineProperty(proxy, propKey, propDesc）、Object.defineProperties(proxy, propDescs)，返回一个布尔值。
+            preventExtensions(target)：拦截Object.preventExtensions(proxy)，返回一个布尔值。
+            getPrototypeOf(target)：拦截Object.getPrototypeOf(proxy)，返回一个对象。
+            isExtensible(target)：拦截Object.isExtensible(proxy)，返回一个布尔值。
+            setPrototypeOf(target, proto)：拦截Object.setPrototypeOf(proxy, proto)，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。
+            apply(target, object, args)：拦截 Proxy 实例作为函数调用的操作，比如proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)。
+            construct(target, args)：拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(...args)。
+         * Reflect,反射拿到目标的默认行为
+            get(target, propKey, receiver)：拦截对象属性的读取，比如proxy.foo和proxy['foo']。
+            set(target, propKey, value, receiver)：拦截对象属性的设置，比如proxy.foo = v或proxy['foo'] = v，返回一个布尔值。
+            has(target, propKey)：拦截propKey in proxy的操作，返回一个布尔值。
+            deleteProperty(target, propKey)：拦截delete proxy[propKey]的操作，返回一个布尔值。
+            ownKeys(target)：拦截Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for...in循环，返回一个数组。该方法返回目标对象所有自身的属性的属性名，而Object.keys()的返回结果仅包括目标对象自身的可遍历属性。
+            getOwnPropertyDescriptor(target, propKey)：拦截Object.getOwnPropertyDescriptor(proxy, propKey)，返回属性的描述对象。
+            defineProperty(target, propKey, propDesc)：拦截Object.defineProperty(proxy, propKey, propDesc）、Object.defineProperties(proxy, propDescs)，返回一个布尔值。
+            preventExtensions(target)：拦截Object.preventExtensions(proxy)，返回一个布尔值。
+            getPrototypeOf(target)：拦截Object.getPrototypeOf(proxy)，返回一个对象。
+            isExtensible(target)：拦截Object.isExtensible(proxy)，返回一个布尔值。
+            setPrototypeOf(target, proto)：拦截Object.setPrototypeOf(proxy, proto)，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。
+            apply(target, object, args)：拦截 Proxy 实例作为函数调用的操作，比如proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)。
+            construct(target, args)：拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(...args)。
+         */ 
+        var obj = {
+            name: 'tom',
+            age: '20',
+            class: '1812A',
+            grade: '专高六'
+        }
+        let newObj = new Proxy(obj, {
+            get(target, propKey, receiver){
+                console.log('get...', target, propKey)
+                return Reflect.get(target, propKey, receiver);
+            },
+            set(target, propKey, value, receiver){
+                console.log('set...', target, propKey)
+                Reflect.set(target, propKey, receiver);
+            },
+            has(target, propKey){
+                // return propKey in target;
+                return false;
+            },
+            deleteProperty(target, propKey){
+                console.log('deleteProperty...', target, propKey);
+                delete target[propKey];
+                return true;
+            }
+        })
+
+        /**
+         * 使用Proxy+Reflect实现观察者
+         * class Observe
+         */ 
+        let data = {
+            task: '开发支付功能',
+            own: '张三',
+            startTime: new Date('2021-07-01'),
+            endTime: new Date('2021-07-31')
+        }
+
+        class Observe{
+            constructor(data){
+                // 所有的观察者
+                this.listeners = [];    
+               
+                return new Proxy(this, {
+                    get:(target, propKey, value)=>{
+                        if (Reflect.has(data, propKey)){
+                            return Reflect.get(data, propKey)
+                        }else{
+                            return Reflect.get(target, propKey)
+                        }
+                    },
+                    set:(target, propKey, value, receiver)=>{
+                        this.listeners.forEach(cb=>cb());
+                        if (Reflect.has(data, propKey)){
+                            return Reflect.set(data, propKey)
+                        }else{
+                            return Reflect.set(target, propKey)
+                        }
+                    }
+                })
+            }
+            observe(callback){
+                this.listeners.push(callback);
+            }
+        }
+
+        // 让newData变成可观察的
+        let newData = new Observe(data);
+        newData.observe(()=>{
+            console.log('当前的属性...', `${newData.task}-${newData.own}-${newData.startTime}-${newData.endTime}`)
+        })
     </script>
 </body>
 </html>
