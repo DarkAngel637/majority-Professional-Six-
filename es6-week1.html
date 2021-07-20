@@ -124,10 +124,10 @@
                 console.log("登陆请求失败");
             }
         }
-        sendRequestAysnc();
+        // sendRequestAysnc();
 
         // defineProperty
-        const _obj = {
+        const obj = {
             province: {
                 'anhui': {
                     'hefei': ['蜀山', '滨湖新区', '肥东', '肥西'],
@@ -142,46 +142,51 @@
             }
         };
 
-        const obj = {};
+        function addObserver(target, key, value) {
+            Object.defineProperty(target, key, {
+                configurable: true, // 是否可以被删除
+                enumerable: true, // 是否可以被枚举遍历
+                // writable: true, // 是否可以被修改
+                // value: 100,     // 属性的值
+                get(){
+                    console.log('get target by key...', target, key);
+                    return value;
+                },
+                set(newValue){
+                    console.log('set value of target by key...', target, key, newValue);
+                    value = newValue;
+                }
+            })
+        }
 
-        function proxyAttribute(target, rawTarget) {
-            for (let key in rawTarget) {
-                Object.defineProperty(target, key, {
-                    get() {
-                        // console.log('访问了', rawTarget, `的${key}属性`);
-                        return JSON.parse(JSON.stringify(rawTarget[key]));
-                        // return rawTarget[key];
-                    },
-                    set(value) {
-                        // console.log(`修改了`, rawTarget, `的${key}属性值为${value}`);
-                        rawTarget[key] = value;
-                    }
-                })
-                if (Object.prototype.toString.call(target[key]) === '[object Object]' && (target[key] !== null)) {
-                    proxyAttribute(target[key], rawTarget[key]);
+        function observerObj(obj){
+            for (let key in obj){
+                addObserver(obj, key, obj[key]);
+                // 判断属性是否为对象，是则继续代理
+                if (typeof obj[key] === '[object Object]' && obj[key] !== null){
+                    observerObj(obj[key]);
                 }
             }
         }
 
-        proxyAttribute(obj, _obj);
-        console.log(obj.province.anhui);
-        console.log(obj.province.hebei);
-        obj.province.anhui = [];
-        console.log(obj.province.anhui);
+        observerObj(obj);
+        console.log('obj.province...', obj.province);
+        obj.province = [];
+        console.log('obj.province...', obj.province);
 
 
         function returnValue(str){
             const keys = str.split('.');
             let value = keys.reduce((prev, item)=>{
                 return prev[item];
-            }, _obj);
+            }, obj);
             console.log('str...', str, value);
             return value;
         }
 
-        returnValue('province');
-        returnValue('province.anhui');
-        returnValue('province.anhui.hefei');
+        // returnValue('province');
+        // returnValue('province.anhui');
+        // returnValue('province.anhui.hefei');
     </script>
 </body>
 
