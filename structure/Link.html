@@ -22,6 +22,8 @@
                 this.head = new Node('head');
                 // 链表当前节点
                 this.currentNode = this.head;
+                // 链接前进节点
+                this.addvanceNode = this.head;
             }
             // 尾部添加
             add(element){
@@ -100,25 +102,65 @@
                 }
                 return n;
             }
+            // 从给定节点，前进n个节点
+            advance(n){
+                while(n--){
+                    if (this.addvanceNode.next === null){
+                        this.addvanceNode = this.head;
+                    }else{
+                        this.addvanceNode = this.addvanceNode.next;
+                    }
+                }
+                return this.addvanceNode;
+            }
         }
 
         let linear = new LinearList();
         // 插入100个数
-        for (let i=0;i<100;i++){
-            linear.add(i);
+        // for (let i=0;i<100;i++){
+        //     linear.add(i);
+        // }
+        // linear.display();
+        // linear.insert(49, 50);
+        // linear.insert(51, 50);
+        // linear.display();
+        // linear.remove(87);
+        // linear.display();
+        // linear.remove(99);
+        // linear.display();
+        // linear.remove('head');
+        // linear.display();
+        // let size = linear.size();
+        // console.log('链表长度...', size);
+
+        /**
+         *  约瑟夫环
+         * 我们这个规则是这么定的：
+        在一间房间总共有n个人（下标0～n-1），只能有最后一个人活命。
+        按照如下规则去排除人：
+            所有人围成一圈
+            顺时针报数，每次报到q的人将被排除掉
+            被排除掉的人将从房间内被移走
+            然后从被kill掉的下一个人重新报数，继续报q，再清除，直到剩余一人
+        */
+        let ysf = new LinearList();
+        let n = Math.floor(Math.random() * 3) + 30,
+            q = Math.floor(Math.random() * 2) + 3;
+        for (let i = 1; i <= n; i++){
+            ysf.add(i);
         }
-        linear.display();
-        linear.insert(49, 50);
-        linear.insert(51, 50);
-        linear.display();
-        linear.remove(87);
-        linear.display();
-        linear.remove(99);
-        linear.display();
-        linear.remove('head');
-        linear.display();
-        let size = linear.size();
-        console.log('链表长度...', size);
+        ysf.remove('head');
+        console.log('人数...', n, '报数...', q);
+        // 第一次打印
+        ysf.display();
+        let dead = '死亡顺序';
+        while(ysf.size() > 2){
+            let node = ysf.advance(q);
+            dead += `->${node.element}`;
+            ysf.remove(node.element);
+        }
+        console.log('dead...', dead);
+        ysf.display();
     </script>
 </body>
 </html>
