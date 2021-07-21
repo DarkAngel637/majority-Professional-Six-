@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据结构-二叉树</title>
+</head>
+<body>
+    <script>
+        class TreeNode{
+            constructor(element){
+                this.element = element;
+                // 左节点，连接比自己小的数据
+                this.left = null;
+                // 有节点，连接比自己大大数据
+                this.right = null;
+            }
+        }
+        /**
+         * 树大遍历
+         * 1. 先序遍历 根->left->right
+         * 2. 中序遍历 left->根->right
+         * 3. 后续遍历 left->right->根
+         */ 
+        class BinarySearchTree{
+            constructor(){
+                this.root = null;
+            }
+            add(element){
+                let node = new TreeNode(element);
+                let parentNode = this.root;
+                if (this.root === null){
+                    this.root = node;
+                }else{
+                    while(true){
+                        if (element < parentNode.element){
+                            if(parentNode.left === null){
+                                parentNode.left = node;
+                                break;
+                            }else{
+                                parentNode = parentNode.left;
+                            }
+                        }else{
+                            if (parentNode.right === null){
+                                parentNode.right = node;
+                                break;
+                            }else{
+                                parentNode = parentNode.right;
+                            }
+                        }
+                    }
+                }
+            }
+            // 先序遍历
+            preOrderTraverse(node){
+                if (node === null){
+                    return;
+                }
+                console.log('node...', node);
+                this.preOrderTraverse(node.left);
+                this.preOrderTraverse(node.right);
+            }
+            // 中序遍历
+            inOrdeTranverse(node){
+                if (node === null){
+                    return;
+                }
+                this.inOrdeTranverse(node.left);
+                console.log('node...', node.element);
+                this.inOrdeTranverse(node.right);
+            }
+            // 后序遍历
+            postOrderTraverse(){
+
+            }
+        }
+        let bst = new BinarySearchTree();
+        bst.add(100);
+        bst.add(80);
+        bst.add(60);
+        bst.add(82);
+        bst.add(81);
+        bst.add(110);
+        // bst.inOrdeTranverse(bst.root);
+        console.log('--------------')
+        bst.preOrderTraverse(bst.root);
+    </script>
+</body>
+</html>
