@@ -8,6 +8,46 @@
 </head>
 <body>
     <script>
+        class Queue{
+            constructor(){
+                this.data = [];
+            }
+            enqueue(item){
+                this.data.push(item);
+            }
+            dequeue(){
+                return this.data.shift();
+            }
+            pick(){
+                return this.data[0];
+            }
+            clear(){
+                this.data = [];
+            }
+            length(){
+                return this.data.length;
+            }
+        }
+        class Stack{
+            constructor(){
+                this.data = [];
+            }
+            push(item){
+                this.data.push(item)
+            }
+            pop(){
+                return this.data.pop();
+            }
+            pick(){
+                return this.data[this.data.length-1];
+            }
+            length(){
+                return this.data.length;
+            }
+            clear(){
+                this.data = [];
+            }
+        }
         class TreeNode{
             constructor(element){
                 this.element = element;
@@ -57,7 +97,7 @@
                 if (node === null){
                     return;
                 }
-                console.log('node...', node);
+                console.log('node...', node.element);
                 this.preOrderTraverse(node.left);
                 this.preOrderTraverse(node.right);
             }
@@ -71,8 +111,43 @@
                 this.inOrdeTranverse(node.right);
             }
             // 后序遍历
-            postOrderTraverse(){
-
+            postOrderTraverse(node){
+                if (node === null){
+                    return;
+                }
+                this.postOrderTraverse(node.left);
+                this.postOrderTraverse(node.right);
+                console.log('node...', node.element);
+            }
+            // 深度优先遍历
+            depthFirstSearch(node){
+                let stack = new Stack();
+                stack.push(node);
+                while(stack.length()){
+                    let node = stack.pop();
+                    console.log('node...', node.element);
+                    if (node.right){
+                        stack.push(node.right)
+                    }
+                    if (node.left){
+                        stack.push(node.left);
+                    }
+                }
+            }
+            // 广度优先遍历
+            breadthFirstSearch(node){
+                let queue = new Queue();
+                queue.enqueue(node);
+                while(queue.length()){
+                    let node = queue.dequeue();
+                    console.log('node...', node.element);
+                    if (node.left){
+                        queue.enqueue(node.left);
+                    }
+                    if (node.right){
+                        queue.enqueue(node.right);
+                    }
+                }
             }
         }
         let bst = new BinarySearchTree();
@@ -82,9 +157,15 @@
         bst.add(82);
         bst.add(81);
         bst.add(110);
-        // bst.inOrdeTranverse(bst.root);
+        bst.inOrdeTranverse(bst.root);
         console.log('--------------')
         bst.preOrderTraverse(bst.root);
+        console.log('--------------')
+        bst.postOrderTraverse(bst.root);
+        console.log('--------------')
+        bst.depthFirstSearch(bst.root);
+        console.log('--------------')
+        bst.breadthFirstSearch(bst.root);
     </script>
 </body>
 </html>
