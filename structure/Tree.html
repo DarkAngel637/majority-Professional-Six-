@@ -5,6 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数据结构-二叉树</title>
+    <style>
+        .tree{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .tree>p{
+            width: 100%;
+            text-align: center;
+            padding-bottom: 40px;
+            margin: 0;
+            background-image: url('../assets//arrow.jpg');
+            background-repeat: no-repeat;
+            background-size: 62% 64%;
+            background-position: 53% 114%;
+        }
+        .tree span{
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .tree>div{
+            width: 50%;
+        }
+        .no-child>p{
+            background: none;
+        }
+        .right-child{
+            justify-content: flex-end;
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -149,13 +182,49 @@
                     }
                 }
             }
+            // 把树转化成dom
+            tree2html(node){
+                if (node){
+                    let cls = '';
+                    if (node.left && node.right){
+                        cls = 'both-child'
+                    }else if(node.left && !node.right){
+                        cls = 'left-child'
+                    }else if(!node.left && node.right){
+                        cls = 'right-child'
+                    }else{
+                        cls = 'no-child'
+                    }
+                    return `<div class="tree ${cls}">
+                        <p><span>${node.element}</span></p>
+                        ${this.tree2html(node.left)}
+                        ${this.tree2html(node.right)}
+                    </div>`;
+                }else{
+                    return '';
+                }
+            }
+            // 找到最大节点
+            getMaxNode(node){
+                while(node.right){
+                    node = node.right;
+                }
+                return node;
+            }
+            // 找到最小节点
+            getMinNode(node){
+                while(node.left){
+                    node = node.left;
+                }
+                return node;
+            }
         }
         let bst = new BinarySearchTree();
         bst.add(100);
         bst.add(80);
         bst.add(60);
         bst.add(82);
-        bst.add(81);
+        bst.add(83);
         bst.add(110);
         bst.inOrdeTranverse(bst.root);
         console.log('--------------')
@@ -166,6 +235,18 @@
         bst.depthFirstSearch(bst.root);
         console.log('--------------')
         bst.breadthFirstSearch(bst.root);
+
+        //  把二叉树转成dom节点
+        let html = bst.tree2html(bst.root);
+        document.body.innerHTML = html;
+
+        // 找到最大节点
+        let max = bst.getMaxNode(bst.root.left);
+        console.log('max...', max);
+
+        // 找到最小节点
+        let min = bst.getMinNode(bst.root.right);
+        console.log('min...', min);
     </script>
 </body>
 </html>
