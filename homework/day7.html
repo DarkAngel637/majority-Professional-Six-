@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业-第七天</title>
+</head>
+<body>
+    <script>
+        class Node{
+            constructor(element){
+                // 存储该节点的值
+                this.element = element;
+                // 指向下一个节点
+                this.next = null;
+            }
+        }
+        class LinearLink{
+            constructor(){
+                // 首节点，永远指向定一个节点
+                this.head = null;
+                // 链表当前节点
+                this.currentNode = this.head;
+                // 链接前进节点
+                this.addvanceNode = this.head;
+            }
+            // 尾部添加
+            add(element){
+                let node = new Node(element);
+                if (this.head === null){
+                    this.head = this.currentNode = this.addvanceNode = node;
+                }else{
+                    // 就此节点挂载到当前节点的下一个节点
+                    this.currentNode.next = node;
+                    // 就当前节点指向此节点
+                    this.currentNode = node;
+                }
+            }
+            // 节点前插入
+            insert(element, nodeElement){
+                let currentNode = this.findPrvNode(nodeElement);
+                let node = new Node(element);
+                node.next = currentNode.next;
+                currentNode.next = node;
+            }
+            // 节点删除
+            remove(element){
+                debugger;
+                // 查找前一个节点
+                let preNode = this.findPrvNode(element);
+                // 查找当前节点
+                let currentNode = this.findNode(element);
+                if (currentNode === this.currentNode){
+                    // 判断要删除的节点是否是尾节点
+                    this.currentNode = preNode;
+                    preNode.next = null;
+                }else if(currentNode === this.head){
+                    // 判断要删除的节点是否是头节点
+                    this.head = currentNode.next;
+                }else{
+                    preNode.next = currentNode.next;
+                }
+            }
+            // 查找前一个节点
+            findPrvNode(element){
+                let currentNode = this.head;
+                while(currentNode.next !== null){
+                    if (currentNode.next.element === element){
+                        return currentNode;
+                    }else{
+                        currentNode = currentNode.next;
+                    }
+                }
+            }
+            // 查找当前节点
+            findNode(element){
+                let currentNode = this.head;
+                while(currentNode){
+                    if (currentNode.element === element){
+                        return currentNode;
+                    }else{
+                        currentNode = currentNode.next;
+                    }
+                }
+            }
+            // 链表遍历
+            display(element){
+                // 1->3->5->2->4
+                let currentNode = this.head;
+                let str = '';
+                while(currentNode && currentNode.next){
+                    str += `${currentNode.element}->`;
+                    currentNode = currentNode.next;
+                }
+                str += `${currentNode.element}`;
+                console.log('list...', str)
+            }
+            // 获取链表长度
+            size(){
+                let currentNode = this.head;
+                let n = 0;
+                while(currentNode){
+                    n++;
+                    currentNode = currentNode.next;
+                }
+                return n;
+            }
+            // 从给定节点，前进n个节点
+            advance(n){
+                while(n--){
+                    if (this.addvanceNode.next === null){
+                        this.addvanceNode = this.head;
+                    }else{
+                        this.addvanceNode = this.addvanceNode.next;
+                    }
+                }
+                return this.addvanceNode;
+            }
+        }
+        const str1 = '1->3->4->5->9->10->13->17',
+              str2 = '1->2->5->6->7->11->12->16->20->23';
+        let link1 = new LinearLink(),
+            link2 = new LinearLink();
+        str1.split('->').forEach(item=>{
+            link1.add(Number(item));
+        })
+        link1.display();
+        str2.split('->').forEach(item=>{
+            link2.add(Number(item));
+        })
+        link2.display();
+        //  按照升序合并链表
+        let mergeLink = new LinearLink(),
+            head1 = link1.head,
+            head2 = link2.head;
+        while(head1 && head2){
+            if (head1.element > head2.element){
+                mergeLink.add(head2.element);
+                head2 = head2.next;
+            }else{
+                mergeLink.add(head1.element);
+                head1 = head1.next;
+            }
+        }
+        if (head1){
+            while(head1){
+                mergeLink.add(head1.element);
+                head1 = head1.next;
+            }
+        }
+        if (head2){
+            while(head2){
+                mergeLink.add(head2.element);
+                head2 = head2.next;
+            }
+        }
+        mergeLink.display();
+
+
+        /**
+         * 代码密钥：凯撒加密法是一种简单的消息编码方式，它是按照字母表将消息中的每个字母移动常量的k位，但这种方式极易破解，因为字母的移动只有26种可能。
+        因此我们使用重复密钥：这是不是将每个字母移动常数位，而是利用一个密钥值列表，将各个字母移动不同的位数。如果消息比密钥值长，可以从头再使用这个密钥值列表；
+        //消息的密钥         
+        const key = [5, 12, -3, 8, -9, 4, 10];     
+        // 消息      
+        const message = "All programmers are playWrights and all computers are lousy actors";
+        */
+       // 通过字符获取ascii码，String.charCodeAt()，通过ascii码转成字符 String.fromCharCode()
+        class Queue{
+            constructor(){
+                this.data = [];
+            }
+            enqueue(item){
+                this.data.push(item);
+            }
+            dequeue(){
+                return this.data.shift();
+            }
+            pick(){
+                return this.data[0];
+            }
+            clear(){
+                this.data = [];
+            }
+            length(){
+                return this.data.length;
+            }
+        }
+        const key = [5, 12, -3, 8, -9, 4, 10];     
+        const message = "All programmers are playWrights and all computers are lousy actors";
+
+        // 加密
+        function encode(key, message){
+            const keyQueue = new Queue(),
+                  messageQueue = new Queue();
+            key.forEach(item=>keyQueue.enqueue(item));
+            message.split('').forEach(item=>messageQueue.enqueue(item));
+            let result = '';
+            while(messageQueue.length()){
+                let str = messageQueue.dequeue();
+                let secert = keyQueue.dequeue();
+                keyQueue.enqueue(secert);
+            
+                result += String.fromCharCode(str.charCodeAt(0) + secert);
+            }
+            return result;
+        }
+        let encodeMessage = encode(key, message);
+        console.log('encodeMessage', encodeMessage);
+
+        // 解密 
+        function decode(key, message){
+            const keyQueue = new Queue(),
+                  messageQueue = new Queue();
+            key.forEach(item=>keyQueue.enqueue(item));
+            message.split('').forEach(item=>messageQueue.enqueue(item));
+            let result = '';
+            while(messageQueue.length()){
+                let str = messageQueue.dequeue();
+                let secert = keyQueue.dequeue();
+                keyQueue.enqueue(secert);
+            
+                result += String.fromCharCode(str.charCodeAt(0) - secert);
+            }
+            return result;
+        }
+        let decodeMessage = decode(key, encodeMessage);
+        console.log('decodeMessage', decodeMessage);
+    </script>
+</body>
+</html>
