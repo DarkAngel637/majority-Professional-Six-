@@ -9,6 +9,7 @@
         .tree{
             display: flex;
             flex-wrap: wrap;
+            align-items: flex-start;
         }
         .tree>p{
             width: 100%;
@@ -43,8 +44,8 @@
         }
         .left-child>p{
             background-image: url('../assets/left.svg');
-            background-size: 270% 76%;
-            background-position: 53% 85%;
+            background-size: 210% 76%;
+            background-position: 58% 85%;
         }
     </style>
 </head>
@@ -227,6 +228,68 @@
                 }
                 return node;
             }
+            // 查找节点
+            find(node, element){
+                if (node === null){
+                    return false;
+                }else{
+                    if (node.element === element){
+                        return node;
+                    }else if(element < node.element){
+                        return this.find(node.left, element);
+                    }else{
+                        return this.find(node.right, element);
+                    }
+                }
+            }
+            // 获取节点个数
+            length(node){
+                if (node === null){
+                    return 0;
+                }else{
+                    return 1 + this.length(node.left) + this.length(node.right);
+                }
+            }
+            // 获取节点最大深度
+            getMaxDepth(node){
+                if (node === null){
+                    return 0;
+                }else{
+                    let lDepth = this.getMaxDepth(node.left);
+                    let rDepth = this.getMaxDepth(node.right);
+                    return lDepth>rDepth? lDepth+1: rDepth+1;
+                }
+            }
+            // 删除节点
+            delete(element){
+                this.root = this.deleteFromNode(this.root, element);
+            }
+            // 从给定节点范围中删除节点
+            deleteFromNode(node, element){
+                if (element < node.element){
+                    node.left = this.deleteFromNode(node.left, element);
+                    return node;
+                }else if (element > node.element){
+                    node.right = this.deleteFromNode(node.right, element);
+                }else{
+                    if (!node.left && !node.right){
+                        // 1.当是叶子节点
+                        return null;
+                    }else if(node.left && !node.right){
+                        // 2. 只有左节点
+                        return node.left
+                    }else if(node.right && !node.left){
+                        // 3. 只有右节点
+                        return node.right
+                    }else{
+                        // 4. 左右节点，找左子树中最大的节点或右子树中最小的节点作为后继节点
+                        let newNode = this.getMinNode(node.right);
+                        node.element = newNode.element;
+                        node.right = this.deleteFromNode(node.right, node.element);
+                        return node;
+                    }
+                }
+            }
         }
         let bst = new BinarySearchTree();
         bst.add(100);
@@ -238,6 +301,7 @@
         bst.add(105);
         bst.add(50);
         bst.add(108);
+        bst.add(20);
         bst.inOrdeTranverse(bst.root);
         console.log('--------------')
         bst.preOrderTraverse(bst.root);
@@ -259,6 +323,38 @@
         // 找到最小节点
         let min = bst.getMinNode(bst.root.right);
         console.log('min...', min);
+
+        // 查找节点
+        let find = bst.find(bst.root, 111);
+        console.log('find...', find);
+
+        // 获取节点个数
+        let length = bst.length(bst.root);
+        console.log('length...', length);
+
+        // 获取最大深度
+        let depth = bst.getMaxDepth(bst.root);
+        console.log('depth...', depth);
+
+        // 测试
+        for (let i=1;i<100;i++){
+            setTimeout(() => {
+                // 添加一个节点
+                bst.add(Math.floor(Math.random()*1000))
+                //  把二叉树转成dom节点
+                let html = bst.tree2html(bst.root);
+                document.body.innerHTML = html;
+                setTimeout(() => {
+                    // 删除一个节点
+                    bst.delete(bst.getMinNode(bst.root).element);
+                    //  把二叉树转成dom节点
+                    let html = bst.tree2html(bst.root);
+                    document.body.innerHTML = html;
+                }, 1500)
+               
+            }, 1000*i);
+            
+        }
     </script>
 </body>
 </html>
