@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二叉树-计算表达式</title>
+</head>
+<body>
+    <script>
+        /**
+         * 表达式(a-(b+c))*(d/e)存储在图下的一颗二叉树当中(二叉树的data域中是字符型)。
+         * 自行生成随机数据(其中e不可为0），编写程序求出该表达式的值
+         */ 
+        class TreeNode{
+            constructor(element){
+                this.element = element;
+                // 左节点，连接比自己小的数据
+                this.left = null;
+                // 有节点，连接比自己大大数据
+                this.right = null;
+            }
+        }
+        class BinaryTree{
+            constructor(){
+                this.root = null;
+            }
+            operate(left, right, type){
+
+                left = typeof left === 'number'?left: obj[left];
+                right = typeof right === 'number'?right: obj[right];
+                switch(type){
+                    case '*': return left*right;
+                    case '/': return left/right;
+                    case '+': return left+right;
+                    case '-': return left-right;
+                    default: return 0;
+                }   
+            }
+            calc(node){
+                if (node === null){
+                    return 0;
+                }else{
+                    if (node.left && node.right){
+                        let leftResult =  this.calc(node.left);
+                        let rightResult = this.calc(node.right);
+                        let result = this.operate(leftResult, rightResult, node.element);
+                        console.log('计算顺序，操作数...', leftResult,  node.element, rightResult, result);
+                        return result;
+                    }else{
+                        return node.element;
+                    }
+                }
+            }
+        }
+        // 创建树
+        let bt = new BinaryTree();
+        bt.root = new TreeNode('*');
+        bt.root.left = new TreeNode('-');
+        bt.root.right = new TreeNode('/');
+        
+        bt.root.left.left = new TreeNode('A');
+        bt.root.left.right = new TreeNode('+');
+        bt.root.right.left = new TreeNode('D');
+        bt.root.right.right = new TreeNode('E');
+
+        bt.root.left.right.left = new TreeNode('B');
+        bt.root.left.right.right = new TreeNode('C');
+
+        // 随机生成ABCDE
+        const obj = {
+            A: Math.floor(Math.random()*990),
+            B: Math.floor(Math.random()*200),
+            C: Math.floor(Math.random()*300),
+            D: Math.floor(Math.random()*500),
+            E: Math.floor(Math.random()*100)+10,
+        }
+        let result = bt.calc(bt.root);
+        console.log('mock数据...', obj, result);
+    </script>
+</body>
+</html>

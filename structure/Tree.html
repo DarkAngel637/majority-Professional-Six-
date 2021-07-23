@@ -15,10 +15,10 @@
             text-align: center;
             padding-bottom: 40px;
             margin: 0;
-            background-image: url('../assets//arrow.jpg');
+            background-image: url(../assets/both.svg);
             background-repeat: no-repeat;
-            background-size: 62% 64%;
-            background-position: 53% 114%;
+            background-size: 90% 76%;
+            background-position: 46% 85%;
         }
         .tree span{
             width: 30px;
@@ -36,6 +36,15 @@
         }
         .right-child{
             justify-content: flex-end;
+        }
+        .right-child>p{
+            background-image: url('../assets/right.svg');
+            background-size: 210% 76%;
+        }
+        .left-child>p{
+            background-image: url('../assets/left.svg');
+            background-size: 270% 76%;
+            background-position: 53% 85%;
         }
     </style>
 </head>
@@ -91,7 +100,7 @@
             }
         }
         /**
-         * 树大遍历
+         * 树的遍历
          * 1. 先序遍历 根->left->right
          * 2. 中序遍历 left->根->right
          * 3. 后续遍历 left->right->根
@@ -226,6 +235,9 @@
         bst.add(82);
         bst.add(83);
         bst.add(110);
+        bst.add(105);
+        bst.add(50);
+        bst.add(108);
         bst.inOrdeTranverse(bst.root);
         console.log('--------------')
         bst.preOrderTraverse(bst.root);
