@@ -47,6 +47,28 @@
             background-size: 210% 76%;
             background-position: 58% 85%;
         }
+        .add{
+            animation: addFrame 1.5s linear;
+        }
+        @keyframes addFrame{
+            0%{
+                background: green;
+            }
+            100%{
+                background: transparent;
+            }
+        }
+        .delete{
+            animation: deleteFrame 1.5s linear;
+        }
+        @keyframes deleteFrame{
+            0%{
+                background: red;
+            }
+            100%{
+                background: transparent;
+            }
+        }
     </style>
 </head>
 <body>
@@ -206,7 +228,7 @@
                         cls = 'no-child'
                     }
                     return `<div class="tree ${cls}">
-                        <p><span>${node.element}</span></p>
+                        <p><span class=${node.element===addElement?'add': node.element===deleteElement?'delete':''}>${node.element}</span></p>
                         ${this.tree2html(node.left)}
                         ${this.tree2html(node.right)}
                     </div>`;
@@ -336,23 +358,31 @@
         let depth = bst.getMaxDepth(bst.root);
         console.log('depth...', depth);
 
+        var addElement, deleteElement;
         // 测试
         for (let i=1;i<100;i++){
             setTimeout(() => {
+            
+                addElement = Math.floor(Math.random()*1000);
+                while(bst.find(bst.root, addElement)){
+                    addElement = Math.floor(Math.random()*1000);
+                }
                 // 添加一个节点
-                bst.add(Math.floor(Math.random()*1000))
+                bst.add(addElement)
+                deleteElement = bst.getMinNode(bst.root).element;
                 //  把二叉树转成dom节点
                 let html = bst.tree2html(bst.root);
                 document.body.innerHTML = html;
                 setTimeout(() => {
+                    addElement = NaN;
                     // 删除一个节点
-                    bst.delete(bst.getMinNode(bst.root).element);
+                    bst.delete(deleteElement);
                     //  把二叉树转成dom节点
                     let html = bst.tree2html(bst.root);
                     document.body.innerHTML = html;
                 }, 1500)
                
-            }, 1000*i);
+            }, 3000*i);
             
         }
     </script>
