@@ -33,7 +33,6 @@
                     this.edges[to] = [from];
                 }
             }
-            // 广度优先遍历
             breadthFirstSearch(){
                 for (let i=0;i<this.vertices.length;i++){
                     let str = `顶点是${this.vertices[i]}的边：`;
@@ -44,36 +43,6 @@
                 }
             }
         }
-        const graph = new Graph();
-        // 添加节点
-        graph.addVertex('都美竹');
-        graph.addVertex('小G娜');
-        graph.addVertex('吴亦凡');
-        graph.addVertex('张某');
-        graph.addVertex('孙一宁');
-        graph.addVertex('王思聪');
-        graph.addVertex('罗志祥');
-
-        // 添加边
-        graph.addEdge('都美竹', '小G娜')
-        graph.addEdge('都美竹', '吴亦凡')
-        graph.addEdge('都美竹', '张某')
-        graph.addEdge('都美竹', '王思聪')
-
-        graph.addEdge('小G娜', '吴亦凡')
-        graph.addEdge('小G娜', '孙一宁')
-        graph.addEdge('小G娜', '罗志祥')
-
-        graph.addEdge('吴亦凡', '张某')
-        graph.addEdge('吴亦凡', '王思聪')
-
-        graph.addEdge('张某', '罗志祥')
-        graph.addEdge('张某', '孙一宁')
-
-        graph.addEdge('王思聪', '罗志祥')
-        graph.addEdge('王思聪', '孙一宁')
-
-        graph.breadthFirstSearch();
     </script>
 </body>
 </html>
