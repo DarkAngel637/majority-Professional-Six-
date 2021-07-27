@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>冒泡排序-动画</title>
+    <title>排序-动画</title>
     <style>
         #container {
             position: relative;
@@ -60,6 +60,7 @@
                 }, n)
             })
         }
+        // 冒泡排序
         async function bubbleSort(arr){
             let elements = [...document.querySelectorAll('#container span')];
             for (let i=0;i<arr.length; i++){
@@ -81,6 +82,7 @@
             }
         }
 
+        // 选择排序
         async function selectionSort(arr){
             let elements = [...document.querySelectorAll('#container span')];
             for (let i=0;i<arr.length; i++){
@@ -106,6 +108,38 @@
                 await sleep(500);
             }
         }
+
+        // 插入排序
+        async function insertionSort(arr){
+            let elements = [...document.querySelectorAll('#container span')];
+            for (let i = 1;i<arr.length; i++){
+                let preIndex = i-1;
+                let current = arr[i];
+                let currentElement = elements[i];
+                currentElement.className = 'active';
+                currentElement.style.bottom = -300+'px';
+                await sleep(500);
+                elements[preIndex].className = 'active';
+                await sleep(500);
+                while(preIndex>=0 && arr[preIndex]>current){
+                    elements[preIndex].className = 'active';
+                    await sleep(500);
+                    elements[preIndex+1] = elements[preIndex];
+                    // 交换两个距离左边的距离
+                    [currentElement.style.left, elements[preIndex].style.left] = [elements[preIndex].style.left, currentElement.style.left];
+                    await sleep(500);
+                    elements[preIndex].className = '';
+                    
+                    arr[preIndex+1] = arr[preIndex];
+                    preIndex--;
+                }
+                arr[preIndex+1] = current;
+                currentElement.style.bottom = 0+'px';
+                currentElement.className = ' finish';
+                // 交换dom
+                elements[preIndex+1] = currentElement;
+            }
+        }
         // 1. 生成随机数组
         let arr = randomData();
         // 2. 把数组转化成dom
@@ -113,7 +147,9 @@
         // 3. 调用冒泡排序
         // bubbleSort(arr);
         // 4. 调用选择排序
-        selectionSort(arr)
+        // selectionSort(arr)
+        // 5. 调用插入排序
+        insertionSort(arr)
     </script>
 </body>
 </html>
