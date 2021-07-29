@@ -1,9 +1,10 @@
 import Observer from './observe.js';
+import Compile from './compile.js';
 
 class MVVM{
     /**
      * @param $options
-     * $el 模版挂载的位置
+     * el 模版挂载的位置
      * data MVVM实例驱动试图的数据 
      */
     constructor($options){
@@ -13,7 +14,8 @@ class MVVM{
         // 通过observe劫持data
         new Observer(this._data);
 
-        // 挂载$el
+        // 挂载el
+        new Compile($options.el, this);
     }
     // 使用this.property代理this._data.property
     _proxy(data){
