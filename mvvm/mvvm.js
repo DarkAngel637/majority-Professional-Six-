@@ -8,6 +8,7 @@ class MVVM{
      * data MVVM实例驱动试图的数据 
      */
     constructor($options){
+        this.$options = $options;
         this._data = $options.data;
         // 把_data内部的属性代理到this上
         this._proxy(this._data);

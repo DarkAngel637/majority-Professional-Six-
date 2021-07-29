@@ -37,17 +37,68 @@ class Compile{
         })
     }
     // 处理元素节点
-    compileElement(el){
-
+    compileElement(node){
+        let attributes = node.attributes;
+        [...attributes].forEach(attr=>{
+            if (this.isDirective(attr.name)){
+                if (this.isEventDirective(attr.name)){
+                    compileUtil.compileEventHandle(node, this.$vm, attr.name, attr.value);
+                }else{
+                    let dir, handleMethod;
+                    if (attr.name.includes(':')){
+                        dir = attr.name.split(':')[1];
+                    }else{
+                        dir = attr.name.slice(2);
+                    }
+                    handleMethod = 'compile'+dir[0].toUpperCase()+dir.slice(1);
+                    
+                    compileUtil[handleMethod] && compileUtil[handleMethod](node, this.$vm, attr.value);
+                }
+                node.removeAttribute(attr.name);
+            }
+        })
+    }
+    // 属性是否是指令
+    isDirective(name){
+        return name.includes('v-');
+    }
+    // 属性是否是事件
+    isEventDirective(name){
+        return name.includes('v-on');
     }
 }
 
+// 编辑工具
 const compileUtil = {
     compileText(node, vm, exp){
         console.log('node...', node);
-
         let val = this._getVMVal(vm, exp);
         update.updateText(node, val);
+    },
+    compileHtml(node, vm, exp){
+        let val = this._getVMVal(vm, exp);
+        update.updateHtml(node, val);
+    },
+    compileModel(node, vm, exp){
+        let val = this._getVMVal(vm, exp);
+        if (node.type === 'checkbox' || node.type === 'radio'){
+            update.updateCheck(node, val);
+            node.addEventListener('change', (e)=>{
+                this._setVMVal(vm, exp, e.target.checked)
+            })
+        }else{
+            update.updateValue(node, val);
+            node.addEventListener('change', (e)=>{
+                this._setVMVal(vm, exp, e.target.value)
+            })
+        }
+    },
+    compileEventHandle(node, vm, dir, exp){
+        dir = dir.split(':')[1];
+        let fn = vm.$options.methods && vm.$options.methods[exp];
+        if (dir && fn){
+            node.addEventListener(dir, fn.bind(vm));
+        }
     },
     _getVMVal(vm, exp){
         let keys = exp.split('.');
@@ -56,12 +107,34 @@ const compileUtil = {
             val = val[keys[i]];
         }
         return val;
+    },
+    _setVMVal(vm, exp, newValue){
+        let keys = exp.split('.');
+        let val = vm;
+        for (let i = 0; i < keys.length; i++){
+            if (i === keys.length - 1){
+                val[keys[i]] = newValue;
+            }else{
+                val = val[keys[i]];
+            }
+        }
+        return val;
     }
 }
 
+// 更新工具
 const update = {
     updateText(node, val){
         node.textContent = val || '';
+    },
+    updateHtml(node, val){
+        node.innerHTML = val;
+    },
+    updateCheck(node, val){
+        node.check = val;
+    },
+    updateValue(node, val){
+        node.value = val;
     }
 }
 
