@@ -1,3 +1,5 @@
+import Watch from './watch.js';
+
 class Compile{
     constructor(el, $vm){
         this.$vm = $vm;
@@ -70,24 +72,29 @@ class Compile{
 
 // 编辑工具
 const compileUtil = {
-    compileText(node, vm, exp){
-        console.log('node...', node);
+    bindReactive(node, vm, exp, type){
         let val = this._getVMVal(vm, exp);
-        update.updateText(node, val);
+        update[type] && update[type](node, val);
+        // 对使用到的exp添加监听
+        new Watch(vm, exp, (newValue) =>{
+            update[type](node, newValue);
+        })
+    },
+    compileText(node, vm, exp){
+        this.bindReactive(node, vm, exp, 'updateText');
     },
     compileHtml(node, vm, exp){
-        let val = this._getVMVal(vm, exp);
-        update.updateHtml(node, val);
+        this.bindReactive(node, vm, exp, 'updateHtml');
+
     },
     compileModel(node, vm, exp){
-        let val = this._getVMVal(vm, exp);
         if (node.type === 'checkbox' || node.type === 'radio'){
-            update.updateCheck(node, val);
+            this.bindReactive(node, vm, exp, 'updateCheck');
             node.addEventListener('change', (e)=>{
                 this._setVMVal(vm, exp, e.target.checked)
             })
         }else{
-            update.updateValue(node, val);
+            this.bindReactive(node, vm, exp, 'updateValue');
             node.addEventListener('change', (e)=>{
                 this._setVMVal(vm, exp, e.target.value)
             })

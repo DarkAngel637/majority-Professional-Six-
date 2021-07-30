@@ -20,6 +20,8 @@ class Observer{
             set(newValue){
                 console.log(`劫持了${key}的值是${newValue}`);
                 value = newValue;
+                // 通知订阅者
+                dep.notify();
             }
         })
     }
