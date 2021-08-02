@@ -11,7 +11,8 @@ class MVVM{
         this.$options = $options;
         this._data = $options.data;
         // 把_data内部的属性代理到this上
-        this._proxy(this._data);
+        this._proxyData(this._data);
+        this._proxyComputed($options.computed);
         // 通过observe劫持data
         new Observer(this._data);
 
@@ -19,7 +20,7 @@ class MVVM{
         new Compile($options.el, this);
     }
     // 使用this.property代理this._data.property
-    _proxy(data){
+    _proxyData(data){
         for (let key in data){
             Object.defineProperty(this, key, {
                 get(){
@@ -27,6 +28,21 @@ class MVVM{
                 },
                 set(newValue){
                     this._data[key] = newValue;
+                }
+            })
+        }
+    }
+    // 使用this.property代理$options.computed.property
+    _proxyComputed(computed){
+        for (let key in computed){
+            Object.defineProperty(this, key, {
+                get(){
+                    if (computed[key] && typeof computed[key] === 'function'){
+                        return computed[key].call(this);
+                    }
+                },
+                set(newValue){
+                    throw(new Error('can`t set value of computed'));
                 }
             })
         }

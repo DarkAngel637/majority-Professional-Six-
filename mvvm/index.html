@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>手动实现MVVM</title>
 </head>
+
 <body>
     <div id="root">
         <div>
             <span v-bind:id="id" v-on:click="click">{{data.num}}</span>
             <div v-bind:html="data.html"></div>
-            <input type="text" v-model="username"/>
-            <input type="checkbox" v-model="isRemember"/>记住密码
+            <input type="text" v-model="username" />
+            <input type="checkbox" v-model="isRemember" />记住密码
             <select v-model="sex">
                 <option value="男">男</option>
                 <option value="女">女</option>
             </select>
+            <div>
+                <span>{{allName}}</span>
+            </div>
         </div>
     </div>
     <script type="module">
@@ -35,8 +40,13 @@
                 sex: '女'
             },
             methods: {
-                click: function(){
+                click: function () {
                     alert('click event');
+                }
+            },
+            computed: {
+                allName() {
+                    return this.username + ' sir';
                 }
             }
         })
@@ -44,4 +54,5 @@
 
     </script>
 </body>
+
 </html>
