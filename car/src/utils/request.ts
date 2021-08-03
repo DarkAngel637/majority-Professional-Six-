@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { IBrandItem } from './types';
 
 const instance = axios.create({
     baseURL: 'http://baojia.chelun.com',

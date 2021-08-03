@@ -1,8 +1,9 @@
 import React from 'react';
+import { ConnectedComponent } from 'react-redux';
 import {Switch, Redirect, Route, RouteComponentProps} from 'react-router-dom';
 interface IRouteItem{
     path: string;
-    component: React.FunctionComponent | React.ComponentClass | string; 
+    component: React.FunctionComponent | React.ComponentClass<any> | string | ConnectedComponent<any, any>;  
     from: string;
     to: string;
     children: IRouteItem[];
@@ -11,7 +12,7 @@ interface IRouteItem{
 interface IProps{
     routes: Partial<IRouteItem>[]
 }
-export default (props: IProps) => {
+const RouterView =  (props: IProps) => {
     return <Switch>{
         props.routes.map(item=>{
             if (item.to){
@@ -30,3 +31,5 @@ export default (props: IProps) => {
         })
         }</Switch>
 }
+
+export default RouterView;
