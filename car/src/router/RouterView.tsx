@@ -15,7 +15,6 @@ export default (props: IProps) => {
     return <Switch>{
         props.routes.map(item=>{
             if (item.to){
-                console.log('item...', item);
                 if (item.from){
                     return <Redirect key={item.to} from={item.from} exact to={item.to!}></Redirect>
                 }
