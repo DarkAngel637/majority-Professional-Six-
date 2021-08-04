@@ -1,0 +1,32 @@
+.img{
+    height:100%;
+    overflow-y: scroll;
+}
+.img p{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,.6);
+    width: 2.46rem; 
+    height:2.46rem;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+}
+.img ul{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.img ul li{
+    width: 2.46rem;
+    height: 2.46rem;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: .04rem;
+}

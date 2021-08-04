@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+*{
+  padding: 0;
+  margin: 0;
+}
+ul,li{
+  list-style: none;
+}
+html{
+  font-size: calc(100vw/750*100);
+}
+body{
+  font-size: .32rem;
+}
+html,body,#root{
+  height: 100%;;
+}
+/* 通用弹窗样式 */
+.dialog{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow-y: scroll;
+}
+.dialog .active{
+  color: #00afff;
+}

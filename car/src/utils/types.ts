@@ -178,3 +178,24 @@ interface Marketattribute {
 interface Brand {
   MasterID: string;
 }
+
+export interface IImageItem {
+  Id: number;
+  Name: string;
+  Count: number;
+  List: IImageInfo[];
+}
+
+interface IImageInfo {
+  Url: string;
+  HighSize: number;
+  LowSize: number;
+}
+
+export interface IModelColorItem {
+  ColorId: string;
+  Name: string;
+  Value: string;
+  OrderId: string;
+  Type: string;
+}
