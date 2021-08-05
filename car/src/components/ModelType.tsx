@@ -8,7 +8,8 @@ import './ModelType.css'
 interface IProps{
     info: Partial<IDetailInfo>,
     getSerialInfo: (id: string) =>void,
-    serialId: string
+    serialId: string,
+    closeTypeDialog: (item: Partial<ICarTypeInfo>)=>void
 }
 
 class ModelType extends React.Component<IProps> {
@@ -58,14 +59,14 @@ class ModelType extends React.Component<IProps> {
     }
 
     render() {
-        // let {colorList, closeColorDialog} = this.props;
+        let {closeTypeDialog} = this.props;
         let list = this.props.info.list;
         let {curYear} = this.state;
         if (!list || !this.years){
             return null;
         }
         return (<div className="dialog typeDialog">
-                <button onClick={()=>{}} >全部车款</button>
+                <button onClick={()=>closeTypeDialog({car_name: '全部车款'})} >全部车款</button>
                 <section>{
                     this.years!.map(item=>{
                         return <span onClick={()=>this.changeYear(item)} className={curYear===item?'active': ''} key={item}>{item}</span>
@@ -76,7 +77,7 @@ class ModelType extends React.Component<IProps> {
                         return <ul key={item.key}>
                             <p>{item.key}</p>
                             {item.list.map(value=>{
-                                return <li key={value.car_id}>
+                                return <li key={value.car_id} onClick={()=>closeTypeDialog(value)}>
                                     <p>
                                         <span>{value.car_name}</span>
                                         <span>{value.market_attribute.dealer_price_min}起</span>

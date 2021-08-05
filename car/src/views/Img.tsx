@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router'
 import { IState } from '../store';
 import {getImageListAction} from '../store/thunk/detail'
-import {IImageItem } from '../utils/types';
+import {ICarTypeInfo, IImageItem } from '../utils/types';
 import './Img.css'
 // 引入颜色选择组件
 import ModelColor from '../components/ModelColor';
@@ -19,43 +19,65 @@ class Img extends Component<IPorps & RouteComponentProps<{id: string}>> {
     constructor(props: IPorps & RouteComponentProps<{id: string}>){
         super(props);
         this.closeColorDialog = this.closeColorDialog.bind(this);
+        this.closeTypeDialog = this.closeTypeDialog.bind(this);
     }
     state = {
         showTypeDialog: false,
         showColorDialog: false,
         ColorID: '',
-        ColorName: '全部颜色'
+        ColorName: '全部颜色',
+        CarID: '',
+        CarName: '全部车款'
     }
 
     componentDidMount(){
         let id = this.id = this.props.match.params.id;
-        this.props.getImageList({SerialID: id});
+        this.getImageList();
     }
 
+    // 选择颜色后的回调
     closeColorDialog({ColorId, Name}:{[key:string]:string}){
         this.setState({
             showColorDialog: false,
             ColorID: ColorId,
             ColorName: Name
         }, ()=>{
-            let params:{[key:string]:string} = {SerialID: this.id};
-            if (ColorId){
-                params.ColorID = ColorId;
-            }
-            this.props.getImageList(params);
+            this.getImageList();
         });
+    }
+
+    // 选择车款后的回调
+    closeTypeDialog({car_name, car_id, market_attribute}: Partial<ICarTypeInfo>){
+        this.setState({
+            showTypeDialog: false,
+            CarID: car_id,
+            CarName: `${market_attribute?.year}款 ${car_name}`
+        }, ()=>{
+            this.getImageList();
+        });
+    }
+
+    getImageList(){
+        let params:{[key:string]:string} = {SerialID: this.id};
+        if (this.state.CarID){
+            params.CarID = this.state.CarID;
+        }
+        if (this.state.ColorID){
+            params.ColorID = this.state.ColorID;
+        }
+        this.props.getImageList(params);
     }
 
     render() {
         let {imageList} = this.props;
-        let {showColorDialog, ColorName, showTypeDialog} = this.state;
+        let {showColorDialog, ColorName, showTypeDialog, CarName} = this.state;
         let id  = this.props.match.params.id;
 
         return (
             <div className="img">
                 <header>
                     <span onClick={()=>this.setState({showColorDialog:true})}>{ColorName}</span>
-                    <span onClick={()=>this.setState({showTypeDialog:true})}>选择车款</span>
+                    <span onClick={()=>this.setState({showTypeDialog:true})}>{CarName}</span>
                 </header>
                {!imageList.length && <img src="http://h5.chelun.com/2017/official/img/no-img.png" alt=""/>}
                 <section className="img-list">{
@@ -74,7 +96,7 @@ class Img extends Component<IPorps & RouteComponentProps<{id: string}>> {
                     })
                 }</section>
                 {showColorDialog && <ModelColor closeColorDialog={this.closeColorDialog} serialId={id}/>}
-                {showTypeDialog && <ModelType serialId={id}/>}
+                {showTypeDialog && <ModelType closeTypeDialog={this.closeTypeDialog} serialId={id}/>}
             </div>
         )
     }
