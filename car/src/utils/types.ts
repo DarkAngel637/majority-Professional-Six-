@@ -35,7 +35,7 @@ export interface IDetailInfo {
   brand: Brand;
   market_attribute: Marketattribute;
   jtexts: string;
-  list: List[];
+  list: ICarTypeInfo[];
   link_from: string;
   shorttips: Shorttips;
   EntranceList: EntranceList[];
@@ -132,7 +132,7 @@ interface Shorttips {
   bordercolor: string;
 }
 
-interface List {
+export interface ICarTypeInfo {
   car_id: string;
   car_name: string;
   trans_type: string;

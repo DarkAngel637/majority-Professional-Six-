@@ -9,7 +9,7 @@ interface IProps{
     serialId: string;
     colorList: {[key:string]: IModelColorItem[]};
     getModelColor: (id: string) => void;
-    closeColorDialog: ()=>void;
+    closeColorDialog: (item:{}) => void;
 }
 class ModelColor extends Component<IProps> {
     state = {
@@ -34,14 +34,14 @@ class ModelColor extends Component<IProps> {
     }
 
     render() {
-        let {colorList} = this.props;
+        let {colorList, closeColorDialog} = this.props;
         let {curYear} = this.state;
         console.log('colorList...', colorList, this.curList);
         let years = Object.keys(colorList);
         
         return (
             <div className="dialog colorDialog">
-                <button>全部颜色</button>
+                <button onClick={()=>closeColorDialog({Name: '全部颜色'})} >全部颜色</button>
                 <section>{
                     years.map(item=>{
                         return <span onClick={()=>this.changeYear(item)} className={curYear===item?'active': ''} key={item}>{item}</span>
@@ -49,7 +49,7 @@ class ModelColor extends Component<IProps> {
                 }</section>
                 <ul>{
                     this.curList.map(item=>{
-                        return <li key={item.ColorId}>
+                        return <li key={item.ColorId} onClick={()=>closeColorDialog(item)}>
                             <span style={{backgroundColor: item.Value}}></span>
                             <span>{item.Name}</span>
                         </li>

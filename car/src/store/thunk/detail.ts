@@ -11,9 +11,9 @@ export function getSerialInfoAction(id: string){
     }
 }
 
-export function getImageListAction(id: string){
+export function getImageListAction(params: {}){
     return async (dispatch: Dispatch)=>{
-        let result = await getImageList(id);
+        let result = await getImageList(params);
         dispatch({
             type: 'UPDATE_IMAGE_LIST',
             payload: result

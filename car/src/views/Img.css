@@ -2,7 +2,7 @@
     height:100%;
     overflow-y: scroll;
 }
-.img p{
+.img-list p{
     position: absolute;
     top: 0;
     left: 0;
@@ -15,14 +15,14 @@
     align-items: center;
     justify-content: center;
 }
-.img ul{
+.img-list ul{
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
 }
-.img ul li{
+.img-list ul li{
     width: 2.46rem;
     height: 2.46rem;
     background-position: center center;
