@@ -79,22 +79,27 @@ class Img extends Component<IPorps & RouteComponentProps<{id: string}>> {
                     <span onClick={()=>this.setState({showColorDialog:true})}>{ColorName}</span>
                     <span onClick={()=>this.setState({showTypeDialog:true})}>{CarName}</span>
                 </header>
-               {!imageList.length && <img src="http://h5.chelun.com/2017/official/img/no-img.png" alt=""/>}
-                <section className="img-list">{
-                    imageList.map(item=>{
-                        return <ul key={item.Id}>
-                            <p>
-                                <span>{item.Name}</span>
-                                <span>{item.Count+'张>'}</span>
-                            </p>
-                            {
-                                item.List.map(value=>{
-                                    return <li key={value.Url} style={{backgroundImage: `url(${value.Url.replace('{0}', String(value.LowSize))})`}}></li>
-                                })
-                            }
-                        </ul>
-                    })
-                }</section>
+                <div>
+                    {!imageList.length?<div className="no-img">
+                        <img src="http://h5.chelun.com/2017/official/img/no-img.png" alt=""/>
+                        <span>没有图片</span>
+                    </div>:
+                    <section className="img-list">{
+                        imageList.map(item=>{
+                            return <ul key={item.Id}>
+                                <p>
+                                    <span>{item.Name}</span>
+                                    <span>{item.Count+'张>'}</span>
+                                </p>
+                                {
+                                    item.List.map(value=>{
+                                        return <li key={value.Url} style={{backgroundImage: `url(${value.Url.replace('{0}', String(value.LowSize))})`}}></li>
+                                    })
+                                }
+                            </ul>
+                        })
+                    }</section>}
+                </div>
                 {showColorDialog && <ModelColor closeColorDialog={this.closeColorDialog} serialId={id}/>}
                 {showTypeDialog && <ModelType closeTypeDialog={this.closeTypeDialog} serialId={id}/>}
             </div>

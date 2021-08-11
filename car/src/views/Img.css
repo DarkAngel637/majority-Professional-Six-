@@ -1,6 +1,27 @@
 .img{
     height:100%;
     overflow-y: scroll;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+}
+.img header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: .8rem;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.img header span{
+    flex: 1;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 0.9;
+}
+.img header span:last-child{
+    border-left: 2px solid #ccc;
 }
 .img-list p{
     position: absolute;
@@ -29,4 +50,17 @@
     background-repeat: no-repeat;
     background-size: cover;
     margin-bottom: .04rem;
+}
+.no-img{
+    width: 100%;
+    height: calc(100vh - .8rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.no-img img{
+    width: 1.5rem;
+    margin-bottom: .3rem;
+    margin-top: -80%;
 }
