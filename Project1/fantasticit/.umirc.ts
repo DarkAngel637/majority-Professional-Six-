@@ -5,4 +5,9 @@ export default defineConfig({
     type: 'none',
   },
   fastRefresh: {},
+  antd: {},
+  dva: {
+    immer: true,
+    hmr: true,
+  },
 });
